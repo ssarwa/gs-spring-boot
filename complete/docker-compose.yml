@@ -1,10 +1,7 @@
 version: '3'
 services:
   springboot-docker-compose-app-container:
-    image: srjavcontainers.azurecr.io/spring-repo:latest
-    build:
-      context: ./
-      dockerfile: Dockerfile
+    image: srjavcontainers.azurecr.io/spring-repo:95
     volumes:
       - /data/springboot-docker-compose-app
     ports:
