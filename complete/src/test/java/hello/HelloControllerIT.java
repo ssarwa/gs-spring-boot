@@ -36,6 +36,6 @@ public class HelloControllerIT {
     public void getHello() throws Exception {
         ResponseEntity<String> response = template.getForEntity(base.toString(),
                 String.class);
-        assertThat(response.getBody(), equalTo("Simple Spring boot App source : https://github.com/spring-guides/gs-spring-boot"));
+        assertThat(response.getBody(), equalTo("Simple Spring boot App source : https://github.com/spring-guides/gs-spring-boot, with Added Azure App Service deployment"));
     }
 }
