@@ -8,7 +8,7 @@ public class HelloController {
     
     @RequestMapping("/")
     public String index() {
-        return "Greetings from Spring Boot, this is from a Container now :-)!";
+        return "Simple Spring boot App source : https://github.com/spring-guides/gs-spring-boot";
     }
     
 }
