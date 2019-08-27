@@ -8,7 +8,7 @@ public class HelloController {
     
     @RequestMapping("/")
     public String index() {
-        return "Simple Spring boot App source : https://github.com/spring-guides/gs-spring-boot, with Added Azure App Service deployments";
+        return "Simple Spring boot App source : https://github.com/spring-guides/gs-spring-boot, with Added Azure App Service deployment";
     }
     
 }
