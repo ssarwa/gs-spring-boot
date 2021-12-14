@@ -1,0 +1,50 @@
+on: [push]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    
+    - uses: azure/docker-login@v1
+      with:
+        login-server: sysacr.azurecr.io
+        username: ${{ secrets.acr_sysacr_username }}
+        password: ${{ secrets.acr_sysacr_password }}
+    
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/complete" -f  "complete/Dockerfile" -t sysacr.azurecr.io/azurecluster:${{ github.sha }} --label dockerfile-path=complete/Dockerfile
+        docker push sysacr.azurecr.io/azurecluster:${{ github.sha }}
+    
+    - uses: azure/k8s-set-context@v1
+      with:
+         kubeconfig: ${{ secrets.aks_azurecluster_kubeConfig }}
+      id: login
+    
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep github-app | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace github-app`
+        fi
+
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: github-app
+        container-registry-url: sysacr.azurecr.io
+        container-registry-username: ${{ secrets.acr_sysacr_username }}
+        container-registry-password: ${{ secrets.acr_sysacr_password }}
+        secret-name: azureclusterdockerauth
+       
+    - uses: azure/k8s-deploy@v1.2
+      with:
+        namespace: github-app
+        manifests: |
+          manifests/deployment.yml
+          manifests/service.yml
+        images: |
+          sysacr.azurecr.io/azurecluster:${{ github.sha }}
+        imagepullsecrets: |
+          azureclusterdockerauth
