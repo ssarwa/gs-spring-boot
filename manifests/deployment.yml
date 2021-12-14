@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "azurecluster-9045"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "azurecluster-9045"
+  template:
+    metadata:
+      labels:
+        app: "azurecluster-9045"
+    spec:
+      containers:
+        - name: "azurecluster-9045"
+          image: "sysacr.azurecr.io/azurecluster"
+          ports:
+          - containerPort: 8080
